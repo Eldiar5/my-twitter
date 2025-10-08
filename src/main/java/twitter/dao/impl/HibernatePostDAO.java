@@ -2,7 +2,6 @@ package twitter.dao.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import twitter.configuration.Profile;
 import twitter.dao.UserDAO;
@@ -81,7 +80,7 @@ public class HibernatePostDAO implements PostDAO {
     }
 
     @Override
-    public List<Post> getAllPostsByTag(String tag) throws PostNotFoundException {
+    public List<Post> getAllPostsByTag(String tag) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             TypedQuery<PostJpaEntity> query = entityManager
                     .createQuery("select p from PostJpaEntity p join p.tags t where t.tagName = :tag", PostJpaEntity.class);
@@ -97,7 +96,7 @@ public class HibernatePostDAO implements PostDAO {
     }
 
     @Override
-    public List<Post> getAllPostsByUserIdIn(Long[] userIds) throws PostNotFoundException {
+    public List<Post> getAllPostsByUserIdIn(Long[] userIds) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             TypedQuery<PostJpaEntity> query = entityManager.createQuery(
                     // Используем оператор IN, как и в SQL
