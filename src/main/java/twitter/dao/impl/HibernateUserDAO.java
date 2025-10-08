@@ -8,7 +8,6 @@ import twitter.dao.UserDAO;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
 import twitter.exceptions.DataAccessException;
-import twitter.exceptions.UserNotFoundException;
 
 import java.util.List;
 
@@ -33,13 +32,13 @@ public class HibernateUserDAO implements UserDAO {
                 return user;
             } catch (Exception ex) {
                 entityManager.getTransaction().rollback();
-                throw new DataAccessException("Ошибка при сохранении пользователя: " + user.getLogin(), ex);
+                throw new DataAccessException("Ошибка при сохранении пользователя: " + user.getLogin());
             }
         }
     }
 
     @Override
-    public User getUserByLogin(String login) throws UserNotFoundException {
+    public User getUserByLogin(String login) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             // Создаём типизированный запрос к сущности User
             TypedQuery<User> query = entityManager
@@ -50,10 +49,10 @@ public class HibernateUserDAO implements UserDAO {
 
             return query.getSingleResult();
 
-        } catch (NoResultException e) {
-            throw new UserNotFoundException("Пользователь с логином '" + login + "' не найден.");
+        } catch (NoResultException ex) {
+            throw new DataAccessException("Пользователь с логином '" + login + "' не найден.");
         } catch (Exception ex) {
-            throw new DataAccessException(ex.getMessage());
+            throw new DataAccessException("Упс, что-то пошло не так: \n" + ex.getMessage());
         }
     }
 
@@ -63,13 +62,13 @@ public class HibernateUserDAO implements UserDAO {
             User user = entityManager.find(User.class, id);
 
             if (user == null) {
-                throw new UserNotFoundException("Пользователь с ID " + id + " не найден.");
+                throw new DataAccessException("Пользователь с ID " + id + " не найден.");
             }
 
             return user;
 
         } catch (Exception ex) {
-            throw new DataAccessException(ex.getMessage());
+            throw new DataAccessException("Упс, что-то пошло не так: \n" + ex.getMessage());
         }
     }
 

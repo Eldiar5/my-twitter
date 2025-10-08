@@ -2,6 +2,7 @@ package twitter.runner.impl;
 
 import twitter.exceptions.ClientDisconnectedException;
 import twitter.exceptions.CommandNotFoundException;
+import twitter.exceptions.DataAccessException;
 import twitter.factory.CommandFactory;
 import twitter.factory.CommandFactoryBuilder;
 
@@ -43,6 +44,9 @@ public class SystemApplicationRunner implements Runnable {
                     } catch (IOException ex1) {
                         System.out.println(ex.getMessage());
                     }
+                } catch (DataAccessException ex) {
+                    writer.write(ex.getMessage() + "\n");
+                    System.err.println(ex.getMessage());
                 } catch (ClientDisconnectedException ex) {
                     System.out.println("Client with IP " + clientId + " disconnected.");
                     return;
