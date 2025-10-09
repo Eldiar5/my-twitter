@@ -1,5 +1,7 @@
 package twitter.runner.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import twitter.exceptions.ClientDisconnectedException;
 import twitter.exceptions.CommandNotFoundException;
 import twitter.exceptions.DataAccessException;
@@ -11,6 +13,8 @@ import java.net.Socket;
 import java.util.Objects;
 
 public class SystemApplicationRunner implements Runnable {
+
+    private static final Logger logger = LoggerFactory.getLogger(SystemApplicationRunner.class);
 
     private final Socket clientSocket;
     private final CommandFactoryBuilder commandFactory;
@@ -27,6 +31,8 @@ public class SystemApplicationRunner implements Runnable {
         BufferedReader reader = null;
         BufferedWriter writer = null;
 
+        logger.info("Новое подключение от клиента: {}", clientId);
+
         try {
             reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -39,21 +45,24 @@ public class SystemApplicationRunner implements Runnable {
                     command = reader.readLine();
                     commandFactory.getHandler(command).handle();
                 } catch (CommandNotFoundException ex) {
-                    try {
-                        writer.write("Команда неопознана, проверьте список команд и попробуйте снова.\n");
-                    } catch (IOException ex1) {
-                        System.out.println(ex.getMessage());
-                    }
+                    writer.write("Команда неопознана, проверьте список команд и попробуйте снова.\n");
                 } catch (DataAccessException ex) {
-                    writer.write(ex.getMessage() + "\n");
-                    System.err.println(ex.getMessage());
+                    // 1. Для разработчика: логируем ПОЛНУЮ ошибку со стектрейсом
+                    logger.error("Произошла ошибка доступа к данным при обработке запроса от клиента {}", clientId, ex);
+
+                    // 2. Для пользователя: отправляем общее, безопасное сообщение
+                    writer.write("Произошла внутренняя ошибка сервера. Пожалуйста, попробуйте позже.\n");
                 } catch (ClientDisconnectedException ex) {
-                    System.out.println("Client with IP " + clientId + " disconnected.");
+                    logger.info("Клиент {} отключился.", clientId);
                     return;
+                } catch (Exception ex) {
+                    // Ловим все остальные непредвиденные ошибки
+                    logger.error("Непредвиденная ошибка при обработке запроса от клиента {}", clientId, ex);
+                    writer.write("Произошла критическая непредвиденная ошибка.\n");
                 }
             }
         } catch (IOException ex) {
-            System.out.println("Что то сломалось, сообщение: " + ex.getMessage());
+            logger.error("Ошибка ввода-вывода для клиента {}: {}", clientId, ex.getMessage());
         } finally {
             try {
                 if (Objects.nonNull(reader)) {
@@ -63,8 +72,9 @@ public class SystemApplicationRunner implements Runnable {
                     writer.close();
                 }
                 clientSocket.close();
+                logger.info("Соединение с клиентом {} закрыто.", clientId);
             } catch (IOException ex) {
-                System.out.println(ex.getMessage());
+                logger.error("Ошибка при закрытии ресурсов для клиента {}.", clientId, ex);
             }
         }
 
