@@ -53,7 +53,6 @@ public class PostJpaMapper {
                         tag.setTagName(tagName);
                         return tag;
                     })
-                    .map(Tags -> new Tags()) // Создаем новую сущность Tags для каждого имени тега
                     .collect(Collectors.toList());
             entity.setTags(tagEntities);
         }
