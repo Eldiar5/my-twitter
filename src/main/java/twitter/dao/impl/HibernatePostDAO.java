@@ -3,11 +3,13 @@ package twitter.dao.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter.configuration.Profile;
 import twitter.dao.UserDAO;
 import twitter.entity.post.PostJpaEntity;
+import twitter.entity.tags.Tags;
 import twitter.mapper.dbMapper.PostJpaMapper;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
@@ -103,11 +105,19 @@ public class HibernatePostDAO implements PostDAO {
     public List<Post> getAllPostsByTag(String tag) {
         logger.info("Получение всех постов по тегу: '{}'", tag);
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-            TypedQuery<PostJpaEntity> query = entityManager
-                    .createQuery("select p from PostJpaEntity p join p.tags t where t.tagName = :tag ORDER BY p.createdAt DESC", PostJpaEntity.class);
 
-            query.setParameter("tag", tag);
-            List<PostJpaEntity> entities = query.getResultList();
+            // criteriaAPI query
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<PostJpaEntity> query = builder.createQuery(PostJpaEntity.class);
+            Root<PostJpaEntity> root = query.from(PostJpaEntity.class);
+            Join<PostJpaEntity, Tags> tagJoin = root.join("tags");
+            Predicate byTagPredicate = builder.equal(tagJoin.get("tagName"), tag);
+            query.where(byTagPredicate);
+            query.orderBy(builder.desc(root.get("createdAt")));
+
+            TypedQuery<PostJpaEntity> jQuery = entityManager.createQuery(query);
+
+            List<PostJpaEntity> entities = jQuery.getResultList();
             List<Post> posts = entities.stream()
                     .map(postJpaMapper::toDomain)
                     .collect(Collectors.toList());
