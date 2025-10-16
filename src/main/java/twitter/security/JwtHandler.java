@@ -7,11 +7,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import twitter.configuration.Component;
+import twitter.configuration.Injection;
 import twitter.configuration.Value;
 
 import java.security.Key;
 import java.util.Date;
 
+@Component
 public class JwtHandler {
 
     @Value(key = "jwt.secret.key")
@@ -19,6 +22,9 @@ public class JwtHandler {
 
     @Value(key = "jwt.token.life.time")
     private Long tokenLifeTime;
+
+    @Injection
+    public JwtHandler() {}
 
     public String generateToken(String username) {
         Date now = new Date();
