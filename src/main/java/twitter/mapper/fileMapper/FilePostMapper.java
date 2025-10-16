@@ -2,7 +2,7 @@ package twitter.mapper.fileMapper;
 
 import twitter.entity.post.Post;
 import twitter.exceptions.UserNotFoundException;
-import twitter.postDto.PostDto;
+import twitter.dto.v1.PostDto;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

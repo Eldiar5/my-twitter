@@ -6,7 +6,7 @@ import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.exceptions.UserNotFoundException;
 import twitter.mapper.fileMapper.FilePostMapper;
-import twitter.postDto.PostDto;
+import twitter.dto.v1.PostDto;
 import twitter.service.UserService;
 
 import java.sql.ResultSet;

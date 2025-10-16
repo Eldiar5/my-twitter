@@ -1,4 +1,4 @@
-package twitter.postDto;
+package twitter.dto.v1;
 
 public class PostDto {
 
