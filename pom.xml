@@ -54,6 +54,60 @@
             <version>1.5.6</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Jetty dependencies -->
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>12.1.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty.ee10/jetty-ee10-servlet -->
+        <dependency>
+            <groupId>org.eclipse.jetty.ee10</groupId>
+            <artifactId>jetty-ee10-servlet</artifactId>
+            <version>12.1.1</version>
+        </dependency>
+
+        <!-- Jersey: "движок" для создания REST-эндпоинтов -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <!-- Jersey HK2: для внедрения зависимостей внутри Jersey -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <!-- Jersey + Jackson: для автоматической работы с JSON -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <!-- JWT dependencies -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -71,6 +125,9 @@
                 <database.url>jdbc:postgresql://localhost:5432/my_twitter_db</database.url>
                 <database.user>postgres</database.user>
                 <database.password>1</database.password>
+
+                <jwt.secret.key>RWxkaWFyV2lsbEJlY29tZVRoZUJlc3RKYXZhRGV2ZWxvcGVy</jwt.secret.key>
+                <jwt.token.life.time>600</jwt.token.life.time>
             </properties>
         </profile>
 
@@ -85,6 +142,9 @@
                 <database.url>jdbc:postgresql://localhost:5432/my_twitter_prod_db</database.url>
                 <database.user>postgres</database.user>
                 <database.password>1</database.password>
+
+                <jwt.secret.key>RWxkaWFyV2lsbEJlY29tZVRoZUJlc3RKYXZhRGV2ZWxvcGVy</jwt.secret.key>
+                <jwt.token.life.time>600</jwt.token.life.time>
             </properties>
         </profile>
 
@@ -99,6 +159,9 @@
                 <database.url>none</database.url>
                 <database.user>none</database.user>
                 <database.password>none</database.password>
+
+                <jwt.secret.key>none</jwt.secret.key>
+                <jwt.token.life.time>none</jwt.token.life.time>
             </properties>
         </profile>
     </profiles>
