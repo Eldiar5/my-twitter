@@ -20,7 +20,7 @@ public class JwtHandler {
     @Value(key = "jwt.secret.key")
     private String secretKey;
 
-    @Value(key = "jwt.token.life.time")
+    @Value(key = "token.life.time")
     private Long tokenLifeTime;
 
     @Injection
