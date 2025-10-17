@@ -8,6 +8,7 @@ import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.configuration.Value;
 import twitter.runner.ApplicationRunner;
+import twitter.servlet.LoginServlet;
 
 @Component
 public class JettyServerRunner implements ApplicationRunner {
@@ -29,6 +30,8 @@ public class JettyServerRunner implements ApplicationRunner {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
             context.setContextPath("/");
             server.setHandler(context);
+
+            context.addServlet(LoginServlet.class, "/api/login");
 
             server.start();
             server.join();
