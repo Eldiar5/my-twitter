@@ -1,7 +1,7 @@
 package twitter.factory.command;
 
-import twitter.controller.PostCommandController;
-import twitter.controller.UserCommandController;
+import twitter.controller.v1.PostCommandController;
+import twitter.controller.v1.UserCommandController;
 import twitter.exceptions.CommandNotFoundException;
 import twitter.factory.CommandFactory;
 

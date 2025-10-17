@@ -1,4 +1,4 @@
-package twitter.controller;
+package twitter.controller.v1;
 
 import twitter.entity.user.UserType;
 import twitter.exceptions.ClientDisconnectedException;

@@ -2,8 +2,8 @@ package twitter.factory;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
-import twitter.controller.PostCommandController;
-import twitter.controller.UserCommandController;
+import twitter.controller.v1.PostCommandController;
+import twitter.controller.v1.UserCommandController;
 import twitter.factory.command.CommandFactoryImpl;
 import twitter.mapper.viewMapper.PostViewMapper;
 import twitter.security.Security;

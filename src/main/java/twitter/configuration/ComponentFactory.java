@@ -219,7 +219,7 @@ public class ComponentFactory {
                 // Превращаем относительный путь в полное имя класса, понятное для Java.
                 // 1. Убираем расширение ".class".
                 // 2. Заменяем системные разделители пути ('\' или '/') на точки '.'.
-                // В итоге получаем строку "twitter.controller.UserCommandController".
+                // В итоге получаем строку "twitter.controller.v1.UserCommandController".
                 String className = relativePath.replace(".class", "").replace(File.separator, ".");
 
                 // Используем стандартный механизм Java, чтобы по имени класса загрузить его в память
