@@ -1,0 +1,39 @@
+package twitter.runner.impl;
+
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.server.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import twitter.configuration.Component;
+import twitter.configuration.Injection;
+import twitter.configuration.Value;
+import twitter.runner.ApplicationRunner;
+
+@Component
+public class JettyServerRunner implements ApplicationRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(JettyServerRunner.class);
+
+    @Injection
+    public JettyServerRunner() {}
+
+    @Value(key = "server.port")
+    private Integer port;
+
+    @Override
+    public void run() {
+        try {
+            logger.info("Twitter сервер запустился на порту: {}", port);
+            Server server = new Server(port);
+
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
+
+            server.start();
+            server.join();
+        } catch (Exception ex) {
+            logger.error("Не удалось запустить сервер, ошибка:  {}", ex.getMessage());
+        }
+    }
+}
