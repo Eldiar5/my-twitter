@@ -1,4 +1,4 @@
-package twitter.customLogbackSetting;
+package twitter.sideComponents.customLogbackSetting;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
