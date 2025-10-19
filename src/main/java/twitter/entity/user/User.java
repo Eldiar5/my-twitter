@@ -24,7 +24,7 @@ public abstract class User {
     @Column(name = "password")
     protected String password;
 
-    @Column(name = "registered")
+    @Column(name = "registered", insertable = false, updatable = false)
     protected LocalDateTime registrationDate;
 
     public User() {}
