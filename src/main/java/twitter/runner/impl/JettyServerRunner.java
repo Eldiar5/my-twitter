@@ -7,8 +7,11 @@ import org.slf4j.LoggerFactory;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.configuration.Value;
+import twitter.filter.TwitterEndpointFilter;
 import twitter.runner.ApplicationRunner;
+import twitter.servlet.InfoServlet;
 import twitter.servlet.LoginServlet;
+import twitter.servlet.RegistrationServlet;
 
 @Component
 public class JettyServerRunner implements ApplicationRunner {
@@ -24,14 +27,18 @@ public class JettyServerRunner implements ApplicationRunner {
     @Override
     public void run() {
         try {
-            logger.info("Twitter сервер запустился на порту: {}", port);
+            logger.warn("Twitter сервер запустился на порту: {}", port);
             Server server = new Server(port);
 
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
             context.setContextPath("/");
             server.setHandler(context);
 
+            context.addFilter(TwitterEndpointFilter.class, "/*", null);
+
             context.addServlet(LoginServlet.class, "/api/login");
+            context.addServlet(InfoServlet.class, "/api/info");
+            context.addServlet(RegistrationServlet.class, "/api/register");
 
             server.start();
             server.join();
