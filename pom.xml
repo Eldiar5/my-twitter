@@ -115,6 +115,14 @@
             <artifactId>lombok</artifactId>
             <version>1.18.38</version>
         </dependency>
+
+        <!-- Bcrypt endcoder -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>6.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
