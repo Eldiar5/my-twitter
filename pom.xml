@@ -134,7 +134,7 @@
                 <database.password>1</database.password>
 
                 <jwt.secret.key>RWxkaWFyV2lsbEJlY29tZVRoZUJlc3RKYXZhRGV2ZWxvcGVy</jwt.secret.key>
-                <token.life.time>600</token.life.time>
+                <token.life.time>300000</token.life.time>
             </properties>
         </profile>
 
@@ -151,7 +151,7 @@
                 <database.password>1</database.password>
 
                 <jwt.secret.key>RWxkaWFyV2lsbEJlY29tZVRoZUJlc3RKYXZhRGV2ZWxvcGVy</jwt.secret.key>
-                <token.life.time>600</token.life.time>
+                <token.life.time>300000</token.life.time>
             </properties>
         </profile>
 
