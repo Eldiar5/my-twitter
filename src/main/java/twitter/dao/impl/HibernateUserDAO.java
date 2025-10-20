@@ -27,12 +27,12 @@ public class HibernateUserDAO implements UserDAO {
     }
 
     @Override
-    public User saveNewUser(User user) {
+    public User save(User user) {
         logger.info("Сохранение нового пользователя с логином: {}", user.getLogin());
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             try {
                 entityManager.getTransaction().begin();
-                entityManager.persist(user);
+                entityManager.merge(user);
                 entityManager.getTransaction().commit();
                 logger.info("Пользователь {} успешно сохранен с ID: {}", user.getLogin(), user.getId());
                 return user;
