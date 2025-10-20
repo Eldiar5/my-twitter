@@ -66,7 +66,7 @@ public class FileUserDAO implements UserDAO {
     }
 
     @Override
-    public synchronized User saveNewUser(User user) throws UserNotFoundException {
+    public synchronized User save(User user) throws UserNotFoundException {
 
         id = id + 1;
         user.setId(id);

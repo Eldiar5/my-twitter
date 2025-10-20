@@ -65,12 +65,11 @@ public class RegistrationController {
 
                 user.setUserType(userType);
                 user.setLogin(requestDto.getLogin());
-                user.setPassword(requestDto.getPassword());
                 user.setName(requestDto.getName());
                 user.setLastName(requestDto.getLastName());
                 user.setBirthDate(birthDate);
 
-                User savedUser = userService.saveNewUser(user);
+                User savedUser = userService.saveNewUser(user, requestDto.getPassword());
 
                 RegistrationResponseDto responseDto = new RegistrationResponseDto();
                 responseDto.setId(savedUser.getId());
@@ -94,12 +93,11 @@ public class RegistrationController {
 
                 user.setUserType(userType);
                 user.setLogin(requestDto.getLogin());
-                user.setPassword(requestDto.getPassword());
                 user.setTitle(requestDto.getTitle());
                 user.setSpecialization(requestDto.getSpecialization());
                 user.setDateOfFoundation(dateOfFoundation);
 
-                User savedUser = userService.saveNewUser(user);
+                User savedUser = userService.saveNewUser(user, requestDto.getPassword());
 
                 RegistrationResponseDto responseDto = new RegistrationResponseDto();
                 responseDto.setLogin(savedUser.getLogin());
