@@ -23,9 +23,9 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User saveNewUser(User user) throws UserNotFoundException {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userDAO.saveNewUser(user);
+    public User saveNewUser(User user, String clearPassword) throws UserNotFoundException {
+        user.setPasswordHash(passwordEncoder.encode(clearPassword));
+        return userDAO.save(user);
     }
 
     public boolean isUserExists(String login) throws UserNotFoundException {
