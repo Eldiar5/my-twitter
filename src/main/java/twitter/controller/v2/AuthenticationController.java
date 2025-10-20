@@ -1,5 +1,6 @@
 package twitter.controller.v2;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.dto.v2.request.LoginRequestDto;
@@ -17,11 +18,13 @@ public class AuthenticationController {
 
     private final UserService userService;
     private final JwtHandler jwtHandler;
+    private final PasswordEncoder passwordEncoder;
 
     @Injection
-    public AuthenticationController(UserService userService, JwtHandler jwtHandler) {
+    public AuthenticationController(UserService userService, JwtHandler jwtHandler, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.jwtHandler = jwtHandler;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public LoginResponseDto login(LoginRequestDto request) {
@@ -41,7 +44,10 @@ public class AuthenticationController {
             }
 
             User user = userService.getUserByLogin(request.getLogin());
-            if (!user.getPassword().equals(request.getPassword())) {
+
+            String hashedPassword = user.getPassword();
+
+            if (passwordEncoder.matches(request.getPassword(), hashedPassword)) {
                 throw new TwitterIllegalArgumentException("Введен неверный пароль.");
             }
 
