@@ -63,6 +63,6 @@ public class Person extends User {
         DateTimeFormatter fDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String birthDateString = this.birthDate.format(fDate);
         String registrationDateString = this.registrationDate.format(fDateTime);
-        return String.format("{PERSON}{%d}{%s}{%s}{%s}{%s}{%s}{%s}", super.getId(), super.getLogin(), super.getPassword(), this.name, this.lastName, birthDateString, registrationDateString);
+        return String.format("{PERSON}{%d}{%s}{%s}{%s}{%s}{%s}{%s}", super.getId(), super.getLogin(), super.getPasswordHash(), this.name, this.lastName, birthDateString, registrationDateString);
     }
 }

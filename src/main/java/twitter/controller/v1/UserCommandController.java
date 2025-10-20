@@ -1,5 +1,6 @@
 package twitter.controller.v1;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import twitter.entity.user.UserType;
 import twitter.exceptions.ClientDisconnectedException;
 import twitter.exceptions.UnknownUserTypeException;
@@ -23,6 +24,7 @@ import java.util.List;
 public class UserCommandController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
     private final Security securityComponent;
     private final BufferedReader input;
     private final BufferedWriter output;
@@ -31,12 +33,13 @@ public class UserCommandController {
 
 //    @Injection
     public UserCommandController(
-            UserService userService,
+            UserService userService, PasswordEncoder passwordEncoder,
             Security securityComponent,
             BufferedReader input,
             BufferedWriter output, String userIp
     ) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
         this.securityComponent = securityComponent;
         this.input = input;
         this.output = output;
@@ -114,7 +117,6 @@ public class UserCommandController {
                 user = buildOrganization();
             }
             user.setLogin(login);
-            user.setPassword(password);
             user.setUserType(userType);
 
 
@@ -122,7 +124,7 @@ public class UserCommandController {
                 output.append("Пользователь под таким логином уже есть.").append("\n").flush();
                 return;
             }
-            output.append(userService.saveNewUser(user).beautify()).append("\n").flush();
+            output.append(userService.saveNewUser(user, password).beautify()).append("\n").flush();
 
         }catch (NullPointerException ex) {
             return;
@@ -236,7 +238,7 @@ public class UserCommandController {
             output.append("Введите пароль: ").flush();
             String password = this.input.readLine();
             User user = userService.getUserByLogin(login);
-            if (!user.getPassword().equals(password)) {
+            if (passwordEncoder.matches(password, user.getPasswordHash())) {
                 output.append("Введен неверный пароль.").append("\n").flush();
                 return;
             }

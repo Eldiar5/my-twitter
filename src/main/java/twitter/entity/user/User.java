@@ -21,8 +21,8 @@ public abstract class User {
     @Column(name = "login")
     protected String login;
 
-    @Column(name = "password")
-    protected String password;
+    @Column(name = "password_hash")
+    protected String passwordHash;
 
     @Column(name = "registered", insertable = false, updatable = false)
     protected LocalDateTime registrationDate;
@@ -35,14 +35,6 @@ public abstract class User {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Long getId() {
@@ -67,6 +59,14 @@ public abstract class User {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public abstract String beautify();

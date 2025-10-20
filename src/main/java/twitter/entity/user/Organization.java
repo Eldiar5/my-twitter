@@ -69,6 +69,6 @@ public class Organization extends User{
         DateTimeFormatter fDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String dateOfFoundationString = this.dateOfFoundation.format(fFoundationDate);
         String registrationString = this.registrationDate.format(fDateTime);
-        return String.format("{ORGANIZATION}{%d}{%s}{%s}{%s}{%s}{%s}{%s}", super.getId(), super.getLogin(), super.getPassword(), this.title, this.specialization, dateOfFoundationString, registrationString);
+        return String.format("{ORGANIZATION}{%d}{%s}{%s}{%s}{%s}{%s}{%s}", super.getId(), super.getLogin(), super.getPasswordHash(), this.title, this.specialization, dateOfFoundationString, registrationString);
     }
 }

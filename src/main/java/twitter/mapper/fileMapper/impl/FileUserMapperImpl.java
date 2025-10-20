@@ -42,7 +42,7 @@ public class FileUserMapperImpl implements FileUserMapper {
 
         user.setId(userId);
         user.setLogin(userLogin);
-        user.setPassword(userPass);
+        user.setPasswordHash(userPass);
 
         return user;
     }
@@ -95,7 +95,7 @@ public class FileUserMapperImpl implements FileUserMapper {
 
             person.setId((long) resultSet.getInt("id"));
             person.setLogin(resultSet.getString("login"));
-            person.setPassword(resultSet.getString("password"));
+            person.setPasswordHash(resultSet.getString("password"));
             person.setUserType(UserType.PERSON);
             person.setRegistrationDate(resultSet.getTimestamp("registered").toLocalDateTime());
             person.setName(resultSet.getString("name"));
@@ -109,7 +109,7 @@ public class FileUserMapperImpl implements FileUserMapper {
 
             organization.setId((long) resultSet.getInt("id"));
             organization.setLogin(resultSet.getString("login"));
-            organization.setPassword(resultSet.getString("password"));
+            organization.setPasswordHash(resultSet.getString("password"));
             organization.setUserType(UserType.ORGANIZATION);
             organization.setRegistrationDate(resultSet.getTimestamp("registered").toLocalDateTime());
             organization.setTitle(resultSet.getString("title"));
