@@ -1,4 +1,4 @@
-package twitter.mapper.fileMapper;
+package twitter.mapper.v1.fileMapper;
 
 import twitter.entity.post.Post;
 import twitter.exceptions.UserNotFoundException;

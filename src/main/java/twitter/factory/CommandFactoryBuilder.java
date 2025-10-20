@@ -6,7 +6,7 @@ import twitter.configuration.Injection;
 import twitter.controller.v1.PostCommandController;
 import twitter.controller.v1.UserCommandController;
 import twitter.factory.command.CommandFactoryImpl;
-import twitter.mapper.viewMapper.PostViewMapper;
+import twitter.mapper.v1.viewMapper.PostViewMapper;
 import twitter.security.Security;
 import twitter.service.PostService;
 import twitter.service.UserService;

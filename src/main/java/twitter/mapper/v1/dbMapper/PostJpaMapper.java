@@ -1,4 +1,4 @@
-package twitter.mapper.dbMapper;
+package twitter.mapper.v1.dbMapper;
 
 import twitter.configuration.Component;
 import twitter.dao.UserDAO;

@@ -1,4 +1,4 @@
-package twitter.mapper.fileMapper.impl;
+package twitter.mapper.v1.fileMapper.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
@@ -7,7 +7,7 @@ import twitter.entity.user.Person;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
 import twitter.exceptions.UnknownUserTypeException;
-import twitter.mapper.fileMapper.FileUserMapper;
+import twitter.mapper.v1.fileMapper.FileUserMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

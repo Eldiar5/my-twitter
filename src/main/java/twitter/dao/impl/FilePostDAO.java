@@ -6,7 +6,7 @@ import twitter.configuration.Profile;
 import twitter.dao.PostDAO;
 import twitter.entity.post.Post;
 import twitter.exceptions.PostNotFoundException;
-import twitter.mapper.fileMapper.FilePostMapper;
+import twitter.mapper.v1.fileMapper.FilePostMapper;
 
 import java.io.*;
 import java.time.LocalDateTime;

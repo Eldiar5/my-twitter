@@ -1,10 +1,10 @@
-package twitter.mapper.viewMapper.impl;
+package twitter.mapper.v1.viewMapper.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.entity.post.Post;
 
-import twitter.mapper.viewMapper.PostViewMapper;
+import twitter.mapper.v1.viewMapper.PostViewMapper;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;

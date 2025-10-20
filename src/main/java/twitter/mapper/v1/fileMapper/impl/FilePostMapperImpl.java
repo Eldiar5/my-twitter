@@ -1,11 +1,11 @@
-package twitter.mapper.fileMapper.impl;
+package twitter.mapper.v1.fileMapper.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.exceptions.UserNotFoundException;
-import twitter.mapper.fileMapper.FilePostMapper;
+import twitter.mapper.v1.fileMapper.FilePostMapper;
 import twitter.dto.v1.PostDto;
 import twitter.service.UserService;
 

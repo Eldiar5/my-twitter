@@ -1,4 +1,4 @@
-package twitter.mapper.viewMapper;
+package twitter.mapper.v1.viewMapper;
 
 import twitter.entity.post.Post;
 

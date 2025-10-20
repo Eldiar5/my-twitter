@@ -10,7 +10,7 @@ import twitter.configuration.Profile;
 import twitter.dao.UserDAO;
 import twitter.entity.post.PostJpaEntity;
 import twitter.entity.tags.Tags;
-import twitter.mapper.dbMapper.PostJpaMapper;
+import twitter.mapper.v1.dbMapper.PostJpaMapper;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.dao.PostDAO;

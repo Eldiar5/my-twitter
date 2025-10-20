@@ -8,7 +8,7 @@ import twitter.entity.user.User;
 import twitter.entity.user.UserType;
 import twitter.exceptions.UnknownUserTypeException;
 import twitter.exceptions.UserNotFoundException;
-import twitter.mapper.fileMapper.FileUserMapper;
+import twitter.mapper.v1.fileMapper.FileUserMapper;
 
 import java.io.*;
 import java.time.LocalDateTime;
