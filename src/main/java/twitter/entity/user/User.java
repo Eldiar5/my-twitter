@@ -1,12 +1,16 @@
 package twitter.entity.user;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
 public abstract class User {
 
     @Id
@@ -28,46 +32,6 @@ public abstract class User {
     protected LocalDateTime registrationDate;
 
     public User() {}
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(LocalDateTime registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public UserType getUserType() {
-        return userType;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
 
     public abstract String beautify();
 
