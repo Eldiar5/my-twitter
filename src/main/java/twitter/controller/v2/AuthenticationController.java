@@ -45,9 +45,13 @@ public class AuthenticationController {
 
             User user = userService.getUserByLogin(request.getLogin());
 
-            String hashedPassword = user.getPassword();
+            String hashedPassword = user.getPasswordHash();
 
-            if (passwordEncoder.matches(request.getPassword(), hashedPassword)) {
+            if (Objects.isNull(hashedPassword) || hashedPassword.isEmpty()) {
+                throw new TwitterIllegalArgumentException("Ошибка безопасности: у пользователя отсутствует хеш пароля.");
+            }
+
+            if (!passwordEncoder.matches(request.getPassword(), hashedPassword)) {
                 throw new TwitterIllegalArgumentException("Введен неверный пароль.");
             }
 
