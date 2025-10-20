@@ -9,7 +9,9 @@ import twitter.exceptions.UserNotFoundException;
 import twitter.mapper.v2.HttpUserMapper;
 import twitter.service.UserService;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class InfoController {
@@ -36,6 +38,23 @@ public class InfoController {
             }
 
             return userMapper.mapUserToResponseDto(user);
+        } catch (UserNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public List<InfoResponseDto> infoAll(String login) {
+        try {
+
+            if (!userService.isUserExists(login)) {
+                throw new UserNotFoundException("Для вывода информации, необходимо войти в систему.");
+            }
+
+            return this.userService.getAllUsers()
+                    .stream()
+                    .map(userMapper::mapUserToResponseDto)
+                    .toList();
+
         } catch (UserNotFoundException ex) {
             throw new TwitterIllegalArgumentException(ex.getMessage());
         }
