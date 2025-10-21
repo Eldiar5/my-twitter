@@ -12,12 +12,12 @@ import twitter.exceptions.TwitterIllegalArgumentException;
 import twitter.security.JwtHandler;
 
 import java.io.IOException;
+import java.util.List;
 
-public class InfoServlet extends HttpServlet {
+public class InfoAllCommandServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String authorization = req.getHeader("Authorization");
         String token = authorization.substring(7);
 
@@ -28,7 +28,7 @@ public class InfoServlet extends HttpServlet {
 
             String userLogin = jwtHandler.getUsernameFromToken(token);
             InfoController infoController = ComponentFactory.getComponent(InfoController.class);
-            InfoResponseDto infoResponseDto = infoController.info(userLogin);
+            List<InfoResponseDto> infoResponseDto = infoController.infoAll(userLogin);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(objectMapper.writeValueAsString(infoResponseDto));
 
@@ -39,6 +39,5 @@ public class InfoServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write(objectMapper.writeValueAsString(ex.getMessage()));
         }
-
     }
 }

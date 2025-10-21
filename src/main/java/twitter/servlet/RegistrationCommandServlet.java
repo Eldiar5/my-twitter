@@ -13,7 +13,7 @@ import twitter.exceptions.TwitterIllegalArgumentException;
 
 import java.io.IOException;
 
-public class RegistrationServlet extends HttpServlet {
+public class RegistrationCommandServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
