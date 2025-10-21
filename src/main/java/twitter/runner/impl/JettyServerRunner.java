@@ -9,10 +9,7 @@ import twitter.configuration.Injection;
 import twitter.configuration.Value;
 import twitter.filter.TwitterEndpointFilter;
 import twitter.runner.ApplicationRunner;
-import twitter.servlet.InfoAllServlet;
-import twitter.servlet.InfoServlet;
-import twitter.servlet.LoginServlet;
-import twitter.servlet.RegistrationServlet;
+import twitter.servlet.*;
 
 @Component
 public class JettyServerRunner implements ApplicationRunner {
@@ -37,10 +34,11 @@ public class JettyServerRunner implements ApplicationRunner {
 
             context.addFilter(TwitterEndpointFilter.class, "/*", null);
 
-            context.addServlet(RegistrationServlet.class, "/api/register");
-            context.addServlet(LoginServlet.class, "/api/login");
-            context.addServlet(InfoServlet.class, "/api/info");
-            context.addServlet(InfoAllServlet.class, "/api/info-all");
+            context.addServlet(RegistrationCommandServlet.class, "/api/register");
+            context.addServlet(LoginCommandServlet.class, "/api/login");
+            context.addServlet(InfoCommandServlet.class, "/api/info");
+            context.addServlet(InfoAllCommandServlet.class, "/api/info-all");
+            context.addServlet(InfoByLoginCommandServlet.class, "/api/info-by-login");
 
             server.start();
             server.join();

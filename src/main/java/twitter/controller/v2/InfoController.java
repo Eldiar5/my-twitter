@@ -27,6 +27,24 @@ public class InfoController {
 
     public InfoResponseDto info(String login) {
         if (Objects.isNull(login) ||  login.isBlank()) {
+            throw new TwitterIllegalArgumentException("Некорректное имя");
+        }
+
+        try {
+            User user = userService.getUserByLogin(login);
+
+            if (Objects.isNull(user)) {
+                throw new UserNotFoundException("Не удалось найти пользователя с логином: " + login);
+            }
+
+            return userMapper.mapUserToResponseDto(user);
+        } catch (UserNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public InfoResponseDto infoByLogin(String login) {
+        if (Objects.isNull(login) ||  login.isBlank()) {
             throw new TwitterIllegalArgumentException("Некорректное имя пользователя");
         }
 
