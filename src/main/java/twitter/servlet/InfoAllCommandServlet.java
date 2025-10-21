@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import twitter.configuration.ComponentFactory;
 import twitter.controller.v2.InfoController;
 import twitter.dto.v2.response.InfoResponseDto;
+import twitter.entity.user.UserType;
 import twitter.exceptions.TwitterIllegalArgumentException;
-import twitter.security.JwtHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,20 +18,22 @@ public class InfoAllCommandServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String authorization = req.getHeader("Authorization");
-        String token = authorization.substring(7);
-
-        JwtHandler jwtHandler = ComponentFactory.getComponent(JwtHandler.class);
         ObjectMapper objectMapper = new ObjectMapper();
+
+        String userTypeAsString = req.getParameter("userType");
+        UserType userTypeEnum;
 
         try {
 
-            String userLogin = jwtHandler.getUsernameFromToken(token);
+            userTypeEnum = UserType.valueOf(userTypeAsString);
+
             InfoController infoController = ComponentFactory.getComponent(InfoController.class);
-            List<InfoResponseDto> infoResponseDto = infoController.infoAll(userLogin);
+            List<InfoResponseDto> infoResponseDto = infoController.infoAllByUserType(userTypeEnum);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(objectMapper.writeValueAsString(infoResponseDto));
 
+        } catch (IllegalArgumentException e) {
+            throw new TwitterIllegalArgumentException("Некорректный тип пользователя: " + userTypeAsString);
         } catch (TwitterIllegalArgumentException ex) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write(objectMapper.writeValueAsString(ex.getMessage()));

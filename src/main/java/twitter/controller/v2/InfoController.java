@@ -4,6 +4,7 @@ import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.dto.v2.response.InfoResponseDto;
 import twitter.entity.user.User;
+import twitter.entity.user.UserType;
 import twitter.exceptions.TwitterIllegalArgumentException;
 import twitter.exceptions.UserNotFoundException;
 import twitter.mapper.v2.HttpUserMapper;
@@ -11,7 +12,6 @@ import twitter.service.UserService;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Component
 public class InfoController {
@@ -61,11 +61,27 @@ public class InfoController {
         }
     }
 
-    public List<InfoResponseDto> infoAll(String login) {
+    public List<InfoResponseDto> infoAllByUserType(UserType userType) {
+        if (Objects.isNull(userType)) {
+            throw new TwitterIllegalArgumentException("Некорректный тип пользователя.");
+        }
+
+        try {
+            return this.userService.getAllUsersByUserType(userType)
+                    .stream()
+                    .map(userMapper::mapUserToResponseDto)
+                    .toList();
+
+        } catch (UserNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public List<InfoResponseDto> infoAll() {
         try {
 
-            if (!userService.isUserExists(login)) {
-                throw new UserNotFoundException("Для вывода информации, необходимо войти в систему.");
+            if (userService.getAllUsers().isEmpty()) {
+                throw new TwitterIllegalArgumentException("Список пользователей пуст.");
             }
 
             return this.userService.getAllUsers()
