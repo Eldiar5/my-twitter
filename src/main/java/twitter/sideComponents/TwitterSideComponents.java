@@ -1,5 +1,7 @@
 package twitter.sideComponents;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import twitter.configuration.SideComponent;
@@ -30,5 +32,4 @@ public class TwitterSideComponents {
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(12);
     }
-
 }
