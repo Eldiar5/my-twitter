@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.configuration.Value;
+import twitter.exceptions.CommandNotFoundException;
 import twitter.filter.TwitterEndpointFilter;
 import twitter.runner.ApplicationRunner;
 import twitter.servlet.*;
@@ -40,6 +41,8 @@ public class JettyServerRunner implements ApplicationRunner {
             context.addServlet(InfoAllCommandServlet.class, "/api/info-all");
             context.addServlet(InfoByLoginCommandServlet.class, "/api/info-by-login");
             context.addServlet(InfoAllByUserTypeCommandServlet.class, "/api/info-all-by-user-type");
+
+            context.addServlet(AddPostCommandServlet.class, "/api/add-post");
 
             server.start();
             server.join();

@@ -10,6 +10,7 @@ import twitter.controller.v2.RegistrationController;
 import twitter.dto.v2.request.RegistrationRequestDto;
 import twitter.dto.v2.response.RegistrationResponseDto;
 import twitter.exceptions.TwitterIllegalArgumentException;
+import twitter.sideComponents.web.ObjectMapperAsComponent;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class RegistrationCommandServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ComponentFactory.getComponent(ObjectMapperAsComponent.class).getObjectMapper();
         RegistrationRequestDto requestDto = mapper.readValue(req.getInputStream(), RegistrationRequestDto.class);
 
         try {

@@ -10,6 +10,7 @@ import twitter.controller.v2.InfoController;
 import twitter.dto.v2.response.InfoResponseDto;
 import twitter.exceptions.TwitterIllegalArgumentException;
 import twitter.security.JwtHandler;
+import twitter.sideComponents.web.ObjectMapperAsComponent;
 
 import java.io.IOException;
 
@@ -22,7 +23,7 @@ public class InfoCommandServlet extends HttpServlet {
         String token = authorization.substring(7);
 
         JwtHandler jwtHandler = ComponentFactory.getComponent(JwtHandler.class);
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper mapper = ComponentFactory.getComponent(ObjectMapperAsComponent.class).getObjectMapper();
 
         try {
 
@@ -30,14 +31,14 @@ public class InfoCommandServlet extends HttpServlet {
             InfoController infoController = ComponentFactory.getComponent(InfoController.class);
             InfoResponseDto infoResponseDto = infoController.info(userLogin);
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(objectMapper.writeValueAsString(infoResponseDto));
+            resp.getWriter().write(mapper.writeValueAsString(infoResponseDto));
 
         } catch (TwitterIllegalArgumentException ex) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(objectMapper.writeValueAsString(ex.getMessage()));
+            resp.getWriter().write(mapper.writeValueAsString(ex.getMessage()));
         } catch (Exception ex) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write(objectMapper.writeValueAsString(ex.getMessage()));
+            resp.getWriter().write(mapper.writeValueAsString(ex.getMessage()));
         }
 
     }

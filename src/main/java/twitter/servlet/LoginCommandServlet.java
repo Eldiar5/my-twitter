@@ -10,6 +10,7 @@ import twitter.controller.v2.AuthenticationController;
 import twitter.dto.v2.request.LoginRequestDto;
 import twitter.dto.v2.response.LoginResponseDto;
 import twitter.exceptions.TwitterIllegalArgumentException;
+import twitter.sideComponents.web.ObjectMapperAsComponent;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class LoginCommandServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ComponentFactory.getComponent(ObjectMapperAsComponent.class).getObjectMapper();
         LoginRequestDto loginRequestDto = mapper.readValue(req.getInputStream(), LoginRequestDto.class);
 
         try {
