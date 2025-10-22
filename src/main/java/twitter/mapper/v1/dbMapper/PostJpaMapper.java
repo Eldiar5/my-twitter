@@ -6,6 +6,7 @@ import twitter.entity.post.Post;
 import twitter.entity.post.PostJpaEntity;
 import twitter.entity.tags.Tags;
 import twitter.entity.user.User;
+import twitter.exceptions.TwitterIllegalArgumentException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ public class PostJpaMapper {
      */
     public PostJpaEntity toEntity(Post domainPost, UserDAO userDAO) {
         if (domainPost == null) {
-            return null;
+            throw new TwitterIllegalArgumentException("Domain Post is null");
         }
 
         PostJpaEntity entity = new PostJpaEntity();
