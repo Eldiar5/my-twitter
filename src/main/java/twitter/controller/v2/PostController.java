@@ -6,25 +6,31 @@ import twitter.dto.v2.request.PostRequestDto;
 import twitter.dto.v2.response.PostResponseDto;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
+import twitter.exceptions.PostNotFoundException;
 import twitter.exceptions.TwitterIllegalArgumentException;
 import twitter.exceptions.UserNotFoundException;
+import twitter.mapper.v2.HttpPostMapper;
 import twitter.service.PostService;
 import twitter.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class PostController {
 
     private final PostService postService;
     private final UserService userService;
+    private final HttpPostMapper postMapper;
 
     @Injection
-    public PostController(PostService postService, UserService userService) {
+    public PostController(PostService postService, UserService userService, HttpPostMapper postMapper) {
         this.postService = postService;
         this.userService = userService;
+        this.postMapper = postMapper;
     }
 
     public PostResponseDto addPost(PostRequestDto postRequestDto, String author) {
@@ -64,6 +70,28 @@ public class PostController {
             throw new TwitterIllegalArgumentException(ex.getMessage());
         } catch (Exception ex) {
             throw new TwitterIllegalArgumentException("Не удалось создать пост: " + ex.getMessage());
+        }
+    }
+
+    public List<PostResponseDto> myPosts(String login) {
+        this.validateField(login, "Некорректное имя");
+
+        try {
+
+            User postAuthor = userService.getUserByLogin(login);
+
+            if (Objects.isNull(postAuthor)) {
+                throw new UserNotFoundException("Не удалось найти автора: " + login);
+            }
+
+            List<Post> posts = postService.getPostsByUser(postAuthor);
+
+            return posts.stream()
+                    .map(post -> postMapper.mapPostToResponseDto(post, postAuthor))
+                    .toList();
+
+        } catch (UserNotFoundException | PostNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
         }
     }
 
