@@ -26,8 +26,7 @@ public class PostJpaEntity {
     @Column(name = "text")
     private String text;
 
-    @Column(name = "tags")
-    @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.MERGE})
     @JoinTable(name = "post_and_tags", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tags> tags;
 
