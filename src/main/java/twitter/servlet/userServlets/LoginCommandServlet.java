@@ -1,4 +1,4 @@
-package twitter.servlet;
+package twitter.servlet.userServlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -6,33 +6,35 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import twitter.configuration.ComponentFactory;
-import twitter.controller.v2.InfoController;
-import twitter.dto.v2.response.InfoResponseDto;
+import twitter.controller.v2.AuthenticationController;
+import twitter.dto.v2.request.LoginRequestDto;
+import twitter.dto.v2.response.LoginResponseDto;
 import twitter.exceptions.TwitterIllegalArgumentException;
 import twitter.sideComponents.web.ObjectMapperAsComponent;
 
 import java.io.IOException;
-import java.util.List;
 
-public class InfoAllCommandServlet extends HttpServlet {
+public class LoginCommandServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectMapper mapper = ComponentFactory.getComponent(ObjectMapperAsComponent.class).getObjectMapper();
+        LoginRequestDto loginRequestDto = mapper.readValue(req.getInputStream(), LoginRequestDto.class);
 
         try {
-
-            InfoController infoController = ComponentFactory.getComponent(InfoController.class);
-            List<InfoResponseDto> infoResponseDto = infoController.infoAll();
+            AuthenticationController authController = ComponentFactory.getComponent(AuthenticationController.class);
+            LoginResponseDto loginResponseDto = authController.login(loginRequestDto);
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(mapper.writeValueAsString(infoResponseDto));
+            resp.setContentType("application/json");
 
+            resp.getWriter().write(mapper.writeValueAsString(loginResponseDto));
         } catch (TwitterIllegalArgumentException ex) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write(mapper.writeValueAsString(ex.getMessage()));
-        } catch (Exception ex) {
+        } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write(mapper.writeValueAsString(ex.getMessage()));
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package twitter.mapper.v2;
+package twitter.mapper.v2.impl;
 
 import twitter.configuration.Component;
 import twitter.dto.v2.response.InfoResponseDto;
@@ -6,6 +6,7 @@ import twitter.entity.user.Organization;
 import twitter.entity.user.Person;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
+import twitter.mapper.v2.HttpUserMapper;
 
 import java.time.format.DateTimeFormatter;
 
