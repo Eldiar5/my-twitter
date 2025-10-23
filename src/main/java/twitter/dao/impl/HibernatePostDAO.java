@@ -2,6 +2,7 @@ package twitter.dao.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import twitter.exceptions.PostNotFoundException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -39,6 +41,22 @@ public class HibernatePostDAO implements PostDAO {
         this.userDAO = userDAO;
     }
 
+    private Tags findOrCreateTagByName(EntityManager entityManager, String name) {
+        try {
+            TypedQuery<Tags> query = entityManager
+                    .createQuery("SELECT t FROM Tags t WHERE t.tagName = :name", Tags.class);
+            query.setParameter("name", name);
+
+            return query.getSingleResult();
+
+        } catch (NoResultException ex) {
+            Tags tags = new Tags();
+            tags.setTagName(name);
+            entityManager.persist(tags);
+            return tags;
+        }
+    }
+
     @Override
     public Post saveNewPost(Post domainPost) {
         logger.info("Сохранение нового поста от пользователя с ID: {}", domainPost.getAuthorId());
@@ -46,6 +64,18 @@ public class HibernatePostDAO implements PostDAO {
             try {
                 entityManager.getTransaction().begin();
                 PostJpaEntity entityToSave = postJpaMapper.toEntity(domainPost, userDAO);
+
+                if (!Objects.isNull(domainPost.getTags()) && domainPost.getTags().length > 0) {
+
+                    List<Tags> managedTags = Arrays.stream(domainPost.getTags())
+                            .map(String::trim)
+                            .filter(tagName -> !tagName.isEmpty())
+                            .map(tagName -> findOrCreateTagByName(entityManager, tagName)) // <-- Используем наш helper
+                            .toList();
+
+                    entityToSave.setTags(managedTags);
+                }
+
                 entityManager.persist(entityToSave);
                 entityManager.getTransaction().commit();
 
@@ -73,7 +103,7 @@ public class HibernatePostDAO implements PostDAO {
 
             logger.info("Найдено {} постов", posts.size());
             return posts;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             logger.error("Ошибка при получении всех постов", ex);
             throw new DataAccessException("Ошибка при получении всех постов", ex);
         }
@@ -95,7 +125,7 @@ public class HibernatePostDAO implements PostDAO {
 
             logger.info("Найдено {} постов для пользователя с ID: {}", posts.size(), userId);
             return posts;
-        }  catch(Exception ex) {
+        } catch (Exception ex) {
             logger.error("Ошибка при получении постов для пользователя с ID: {}", userId, ex);
             throw new DataAccessException("Ошибка при получении постов для пользователя: " + userId, ex);
         }
@@ -124,7 +154,7 @@ public class HibernatePostDAO implements PostDAO {
 
             logger.info("Найдено {} постов по тегу: '{}'", posts.size(), tag);
             return posts;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             logger.error("Ошибка при получении постов по тегу: '{}'", tag, ex);
             throw new DataAccessException("Ошибка при получении постов по тегу: " + tag, ex);
         }
@@ -146,7 +176,7 @@ public class HibernatePostDAO implements PostDAO {
 
             logger.info("Найдено {} постов для {} пользователей", posts.size(), userIds.length);
             return posts;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             logger.error("Ошибка при получении постов для пользователей с ID: {}", Arrays.toString(userIds), ex);
             throw new DataAccessException("Ошибка при получении постов для списка пользователей", ex);
         }
