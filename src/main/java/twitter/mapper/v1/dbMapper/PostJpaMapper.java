@@ -33,16 +33,7 @@ public class PostJpaMapper {
         entity.setTopic(domainPost.getTopic());
         entity.setText(domainPost.getText());
         entity.setCreatedAt(domainPost.getCreatedAt());
-
-        // Находим автора по ID через UserDAO
-        if (domainPost.getAuthorId() != 0) {
-            try {
-                User author = userDAO.getUserById(domainPost.getAuthorId());
-                entity.setAuthor(author);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        entity.setAuthor(domainPost.getAuthor());
 
         // Преобразуем массив строк с тегами в список сущностей Tags
         if (domainPost.getTags() != null) {
@@ -75,8 +66,7 @@ public class PostJpaMapper {
         domainPost.setPostId(entity.getPostId() != null ? entity.getPostId().intValue() : null);
 
         if (entity.getAuthor() != null && entity.getAuthor().getId() != null) {
-            // Безопасное преобразование Long в Integer
-            domainPost.setAuthorId(entity.getAuthor().getId().intValue());
+            domainPost.setAuthor(entity.getAuthor());
         }
 
         domainPost.setTopic(entity.getTopic());

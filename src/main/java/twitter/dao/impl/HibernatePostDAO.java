@@ -59,7 +59,7 @@ public class HibernatePostDAO implements PostDAO {
 
     @Override
     public Post saveNewPost(Post domainPost) {
-        logger.info("Сохранение нового поста от пользователя с ID: {}", domainPost.getAuthorId());
+        logger.info("Сохранение нового поста от пользователя с ID: {}", domainPost.getAuthor().getId());
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             try {
                 entityManager.getTransaction().begin();
@@ -86,7 +86,7 @@ public class HibernatePostDAO implements PostDAO {
                 if (entityManager.getTransaction().isActive()) {
                     entityManager.getTransaction().rollback();
                 }
-                logger.error("Ошибка при сохранении поста от пользователя с ID: {}", domainPost.getAuthorId(), ex);
+                logger.error("Ошибка при сохранении поста от пользователя с ID: {}", domainPost.getAuthor().getId(), ex);
                 throw new DataAccessException("Ошибка при сохранении поста", ex);
             }
         }

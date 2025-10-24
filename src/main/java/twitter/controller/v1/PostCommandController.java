@@ -1,5 +1,6 @@
 package twitter.controller.v1;
 
+import twitter.configuration.Profile;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
@@ -16,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Objects;
 
 //@Component
 public class PostCommandController {
@@ -74,13 +76,15 @@ public class PostCommandController {
 
         User authenticatedUser = securityComponent.getAuthenticationUser(userIp);
 
-        Post post = new Post();
-        post.setAuthorId(Math.toIntExact(authenticatedUser.getId()));
-        post.setTopic(topic);
-        post.setText(text);
-        post.setTags(tagsArray);
-
         try {
+            User author = userService.getUserById(authenticatedUser.getId().intValue());
+
+            Post post = new Post();
+            post.setAuthor(author);
+            post.setTopic(topic);
+            post.setText(text);
+            post.setTags(tagsArray);
+
             Post createdPost = postService.savePost(post);
 
             String postAsString = postViewMapper.postToBeautifulString(createdPost, authenticatedUser.getLogin());
@@ -143,9 +147,7 @@ public class PostCommandController {
 
             for (Post post : allPosts) {
                 if (post != null) {
-                    // Здесь нужно получить автора для каждого поста
-                    User author = userService.getUserById(post.getAuthorId());
-                    String postAsString = postViewMapper.postToBeautifulString(post, author.getLogin());
+                    String postAsString = postViewMapper.postToBeautifulString(post, post.getAuthor().getLogin());
                     output.append(postAsString).append("\n").flush();
 
                 }
@@ -182,9 +184,7 @@ public class PostCommandController {
             List<Post> postsByTag = postService.getPostsByTag(tag);
 
             for (Post post : postsByTag) {
-                // Здесь нужно получить автора для каждого поста
-                User author = userService.getUserById(post.getAuthorId());
-                String postAsString = postViewMapper.postToBeautifulString(post, author.getLogin());
+                String postAsString = postViewMapper.postToBeautifulString(post, post.getAuthor().getLogin());
                 output.append(postAsString).append("\n").flush();
 
             }
@@ -226,7 +226,7 @@ public class PostCommandController {
             }
 
             for (Post post : postsByUserLogin) {
-                if (post != null && post.getAuthorId() == user.getId()) {
+                if (post != null && Objects.equals(post.getAuthor().getId(), user.getId())) {
 
                     String postAsString = postViewMapper.postToBeautifulString(post, user.getLogin());
                     output.append(postAsString).append("\n").flush();
@@ -280,8 +280,7 @@ public class PostCommandController {
             List<Post> postsByUserType = postService.getPostsByUserType(userType);
             for (Post post : postsByUserType) {
 
-                User author = userService.getUserById(post.getAuthorId());
-                String postAsString = postViewMapper.postToBeautifulString(post, author.getLogin());
+                String postAsString = postViewMapper.postToBeautifulString(post, post.getAuthor().getLogin());
                 output.append(postAsString).append("\n").flush();
 
             }
@@ -319,7 +318,7 @@ public class PostCommandController {
             Post postToDelete = postService.getPostById(postId);
 
             // 2. Проверяем права: только автор может удалить свой пост
-            if (postToDelete.getAuthorId() != currentUser.getId()) {
+            if (!Objects.equals(postToDelete.getAuthor().getId(), currentUser.getId())) {
                 output.append("Ошибка: вы не можете удалить чужую публикацию.\n").flush();
                 return;
             }
