@@ -2,6 +2,7 @@ package twitter.controller.v2;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.dto.v2.request.RegistrationRequestDto;
 import twitter.dto.v2.response.RegistrationResponseDto;
 import twitter.entity.user.Organization;
@@ -18,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Component
+@Profile(active = {"default", "prod"})
 public class RegistrationController {
 
     private final UserService  userService;

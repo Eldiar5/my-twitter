@@ -2,6 +2,7 @@ package twitter.controller.v2;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.dto.v2.request.PostRequestDto;
 import twitter.dto.v2.response.PostResponseDto;
 import twitter.entity.post.Post;
@@ -17,9 +18,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Component
+@Profile(active = {"default", "prod"})
 public class PostController {
 
     private final PostService postService;
@@ -52,7 +53,7 @@ public class PostController {
                 post.setTags(new String[0]);
             }
 
-            post.setAuthorId(user.getId().intValue());
+            post.setAuthor(user);
             post.setCreatedAt(LocalDateTime.now());
 
             Post savedPost = postService.savePost(post);
@@ -91,6 +92,24 @@ public class PostController {
                     .toList();
 
         } catch (UserNotFoundException | PostNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public List<PostResponseDto> allPosts() {
+        try {
+
+            List<Post> allPosts = postService.getAllPosts();
+
+            if (Objects.isNull(allPosts)) {
+                throw new PostNotFoundException("Список публикаций пуст.");
+            }
+
+            return allPosts.stream()
+                    .map(post -> postMapper.mapPostToResponseDto(post, post.getAuthor()))
+                    .toList();
+
+        } catch (PostNotFoundException ex) {
             throw new TwitterIllegalArgumentException(ex.getMessage());
         }
     }

@@ -2,6 +2,7 @@ package twitter.controller.v2;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.dto.v2.response.InfoResponseDto;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
+@Profile(active = {"default", "prod"})
 public class InfoController {
 
     private final UserService userService;
