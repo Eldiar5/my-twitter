@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.configuration.Value;
 import twitter.filter.TwitterEndpointFilter;
 import twitter.runner.ApplicationRunner;
@@ -14,6 +15,7 @@ import twitter.servlet.postServlets.MyPostsCommandServlet;
 import twitter.servlet.userServlets.*;
 
 @Component
+@Profile(active = {"default", "prod"})
 public class JettyServerRunner implements ApplicationRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(JettyServerRunner.class);
