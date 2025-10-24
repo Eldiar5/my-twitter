@@ -6,8 +6,6 @@ import twitter.configuration.Environment;
 import twitter.configuration.EnvironmentBuilder;
 import twitter.runner.ApplicationRunner;
 
-import java.util.Arrays;
-
 public class Main {
     public static void main(String[] args) {
         Environment environment = EnvironmentBuilder

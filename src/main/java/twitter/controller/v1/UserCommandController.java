@@ -238,7 +238,7 @@ public class UserCommandController {
             output.append("Введите пароль: ").flush();
             String password = this.input.readLine();
             User user = userService.getUserByLogin(login);
-            if (passwordEncoder.matches(password, user.getPasswordHash())) {
+            if (!user.getPasswordHash().equals(password)) {
                 output.append("Введен неверный пароль.").append("\n").flush();
                 return;
             }
