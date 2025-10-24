@@ -28,6 +28,7 @@ public class RegistrationCommandServlet extends HttpServlet {
             resp.setContentType("application/json");
 
             resp.getWriter().write(mapper.writeValueAsString(regResponseDto));
+
         } catch (TwitterIllegalArgumentException ex) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write(mapper.writeValueAsString(ex.getMessage()));

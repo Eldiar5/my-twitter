@@ -31,6 +31,8 @@ public class InfoAllByUserTypeCommandServlet extends HttpServlet {
             InfoController infoController = ComponentFactory.getComponent(InfoController.class);
             List<InfoResponseDto> infoResponseDto = infoController.infoAllByUserType(userTypeEnum);
             resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setContentType("application/json");
+
             resp.getWriter().write(mapper.writeValueAsString(infoResponseDto));
 
         } catch (IllegalArgumentException e) {

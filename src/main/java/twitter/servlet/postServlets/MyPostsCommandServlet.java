@@ -31,6 +31,7 @@ public class MyPostsCommandServlet extends HttpServlet {
             List<PostResponseDto> responseDto = postController.myPosts(author);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");
+
             resp.getWriter().write(mapper.writeValueAsString(responseDto));
 
         } catch (TwitterIllegalArgumentException ex) {

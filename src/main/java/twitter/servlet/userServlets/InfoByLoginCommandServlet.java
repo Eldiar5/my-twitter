@@ -24,6 +24,8 @@ public class InfoByLoginCommandServlet extends HttpServlet {
             InfoController infoController = ComponentFactory.getComponent(InfoController.class);
             InfoResponseDto infoResponseDto = infoController.infoByLogin(targetLogin);
             resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setContentType("application/json");
+
             resp.getWriter().write(mapper.writeValueAsString(infoResponseDto));
 
         } catch (TwitterIllegalArgumentException ex) {

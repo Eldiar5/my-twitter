@@ -32,6 +32,7 @@ public class InfoCommandServlet extends HttpServlet {
             InfoResponseDto infoResponseDto = infoController.info(userLogin);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");
+
             resp.getWriter().write(mapper.writeValueAsString(infoResponseDto));
 
         } catch (TwitterIllegalArgumentException ex) {
