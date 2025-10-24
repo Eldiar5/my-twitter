@@ -11,6 +11,7 @@ import twitter.configuration.Value;
 import twitter.filter.TwitterEndpointFilter;
 import twitter.runner.ApplicationRunner;
 import twitter.servlet.postServlets.AddPostCommandServlet;
+import twitter.servlet.postServlets.AllPostsCommandServlet;
 import twitter.servlet.postServlets.MyPostsCommandServlet;
 import twitter.servlet.userServlets.*;
 
@@ -47,6 +48,7 @@ public class JettyServerRunner implements ApplicationRunner {
 
             context.addServlet(AddPostCommandServlet.class, "/api/add-post");
             context.addServlet(MyPostsCommandServlet.class, "/api/my-posts");
+            context.addServlet(AllPostsCommandServlet.class, "/api/all-posts");
 
             server.start();
             server.join();
