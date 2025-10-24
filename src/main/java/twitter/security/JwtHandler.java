@@ -9,12 +9,14 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.configuration.Value;
 
 import java.security.Key;
 import java.util.Date;
 
 @Component
+@Profile(active = {"default", "prod"})
 public class JwtHandler {
 
     @Value(key = "jwt.secret.key")
