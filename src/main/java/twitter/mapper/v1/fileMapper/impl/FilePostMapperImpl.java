@@ -2,8 +2,10 @@ package twitter.mapper.v1.fileMapper.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
+import twitter.exceptions.DataAccessException;
 import twitter.exceptions.UserNotFoundException;
 import twitter.mapper.v1.fileMapper.FilePostMapper;
 import twitter.dto.v1.PostDto;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
+@Profile(active = "test")
 public class FilePostMapperImpl implements FilePostMapper {
 
     private final UserService userService;
@@ -58,7 +61,9 @@ public class FilePostMapperImpl implements FilePostMapper {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime createdAt = LocalDateTime.parse(tempVariable5.substring(1, tempVariable5.indexOf("}")), formatter);
 
-            post.setAuthorId(Integer.parseInt(author));
+            User user = userService.getUserById(Integer.parseInt(author));
+
+            post.setAuthor(user);
             post.setPostId(Integer.parseInt(postId));
             post.setTopic(topic);
             post.setText(text);
@@ -89,9 +94,7 @@ public class FilePostMapperImpl implements FilePostMapper {
             postDto.setTags(sb.toString());
         }
 
-        User author = userService.getUserById(post.getAuthorId());
-        postDto.setAuthor(author.userName());
-
+        postDto.setAuthor(post.getAuthor().userName());
 
         return postDto;
     }
@@ -101,11 +104,18 @@ public class FilePostMapperImpl implements FilePostMapper {
 
         Post post = new Post();
 
-        post.setAuthorId(resultSet.getInt("author_id"));
-        post.setPostId(resultSet.getInt("post_id"));
-        post.setTopic(resultSet.getString("topic"));
-        post.setText(resultSet.getString("text"));
-        post.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
+        try {
+            User author = userService.getUserById(resultSet.getInt("author_id"));
+
+            post.setAuthor(author);
+            post.setPostId(resultSet.getInt("post_id"));
+            post.setTopic(resultSet.getString("topic"));
+            post.setText(resultSet.getString("text"));
+            post.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
+
+        } catch (UserNotFoundException ex) {
+            throw new DataAccessException(ex.getMessage());
+        }
 
         String tagsFromDB = resultSet.getString("tags");
 

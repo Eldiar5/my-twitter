@@ -2,6 +2,7 @@ package twitter.mapper.v1.fileMapper.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.entity.user.Organization;
 import twitter.entity.user.Person;
 import twitter.entity.user.User;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 @Component
+@Profile(active = "test")
 public class FileUserMapperImpl implements FileUserMapper {
 
     @Injection
