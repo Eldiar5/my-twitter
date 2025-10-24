@@ -1,6 +1,7 @@
 package twitter.mapper.v2.impl;
 
 import twitter.configuration.Component;
+import twitter.configuration.Profile;
 import twitter.dto.v2.response.InfoResponseDto;
 import twitter.entity.user.Organization;
 import twitter.entity.user.Person;
@@ -11,6 +12,7 @@ import twitter.mapper.v2.HttpUserMapper;
 import java.time.format.DateTimeFormatter;
 
 @Component
+@Profile(active = {"default", "prod"})
 public class HttpUserMapperImpl implements HttpUserMapper {
 
     @Override
