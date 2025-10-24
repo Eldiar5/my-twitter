@@ -2,6 +2,7 @@ package twitter.runner.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.configuration.Value;
 import twitter.factory.CommandFactoryBuilder;
 import twitter.runner.ApplicationRunner;
@@ -13,7 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-//@Component
+@Component
+@Profile(active = "test")
 public class TelnetServerApplicationRunner implements ApplicationRunner {
 
     @Value(key = "server.port")
@@ -27,7 +29,7 @@ public class TelnetServerApplicationRunner implements ApplicationRunner {
 
     private final CommandFactoryBuilder factoryBuilder;
 
-//    @Injection
+    @Injection
     public TelnetServerApplicationRunner(CommandFactoryBuilder factoryBuilder) {
         this.factoryBuilder = factoryBuilder;
     }
