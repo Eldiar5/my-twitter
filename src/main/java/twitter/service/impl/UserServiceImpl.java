@@ -3,6 +3,7 @@ package twitter.service.impl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
+import twitter.configuration.Profile;
 import twitter.dao.UserDAO;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
@@ -12,6 +13,7 @@ import twitter.service.UserService;
 import java.util.List;
 
 @Component
+@Profile(active = {"default", "prod"})
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
