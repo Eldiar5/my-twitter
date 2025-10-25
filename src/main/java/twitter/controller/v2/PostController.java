@@ -7,6 +7,7 @@ import twitter.dto.v2.request.PostRequestDto;
 import twitter.dto.v2.response.PostResponseDto;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
+import twitter.entity.user.UserType;
 import twitter.exceptions.PostNotFoundException;
 import twitter.exceptions.TwitterIllegalArgumentException;
 import twitter.exceptions.UserNotFoundException;
@@ -74,6 +75,33 @@ public class PostController {
         }
     }
 
+    public void deletePost(Long postId, String authorLogin) {
+        if (Objects.isNull(postId)) {
+            throw new TwitterIllegalArgumentException("ID поста не может быть пустым.");
+        }
+
+        try {
+
+            User postAuthor = userService.getUserByLogin(authorLogin);
+
+            if (Objects.isNull(postAuthor)) {
+                throw new UserNotFoundException("Не удалось найти автора: " + authorLogin);
+            }
+
+            Post postToDelete = postService.getPostById(postId);
+
+            if (!Objects.equals(postToDelete.getAuthor().getId(), postAuthor.getId())) {
+                throw new SecurityException("Ошибка: вы не можете удалить чужую публикацию.");
+            }
+
+            postService.deletePost(postToDelete);
+
+        } catch (UserNotFoundException | PostNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+
+    }
+
     public List<PostResponseDto> myPosts(String login) {
         this.validateField(login, "Некорректное имя");
 
@@ -110,6 +138,71 @@ public class PostController {
                     .toList();
 
         } catch (PostNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public List<PostResponseDto> postsByTag(String tag) {
+        this.validateField(tag, "Тег не может быть пустым.");
+
+        try {
+            List<Post> postsByTag = postService.getPostsByTag(tag);
+
+            if (Objects.isNull(postsByTag)) {
+                throw new PostNotFoundException("Не удалось найти публикации по тегу " + tag);
+            }
+
+            return postsByTag.stream()
+                    .map(post -> postMapper.mapPostToResponseDto(post, post.getAuthor()))
+                    .toList();
+
+        } catch (PostNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public List<PostResponseDto> postsByLogin(String login) {
+        this.validateField(login, "Логин не может быть пустым.");
+
+        try {
+            User author = userService.getUserByLogin(login);
+
+            if (Objects.isNull(author)) {
+                throw new UserNotFoundException("Не удалось найти пользователя по логину: " + login);
+            }
+
+            List<Post> postsByLogin = postService.getPostsByUser(author);
+
+            if (Objects.isNull(postsByLogin)) {
+                throw new PostNotFoundException("Не удалось найти публикации автора по логину: " + login );
+            }
+
+            return postsByLogin.stream()
+                    .map(post -> postMapper.mapPostToResponseDto(post, post.getAuthor()))
+                    .toList();
+
+        } catch (PostNotFoundException | UserNotFoundException ex) {
+            throw new TwitterIllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public List<PostResponseDto> postsByUserType(UserType userType) {
+        if (Objects.isNull(userType)) {
+            throw new TwitterIllegalArgumentException("Некорректный тип пользователя.");
+        }
+
+        try {
+            List<Post> postsByUserType = postService.getPostsByUserType(userType);
+
+            if (Objects.isNull(postsByUserType)) {
+                throw new PostNotFoundException("Не удалось найти публикации по типу пользователя: " + userType);
+            }
+
+            return postsByUserType.stream()
+                    .map(post -> postMapper.mapPostToResponseDto(post, post.getAuthor()))
+                    .toList();
+
+        } catch (PostNotFoundException | UserNotFoundException ex) {
             throw new TwitterIllegalArgumentException(ex.getMessage());
         }
     }
