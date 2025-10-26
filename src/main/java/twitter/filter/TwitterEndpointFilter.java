@@ -24,14 +24,16 @@ public class TwitterEndpointFilter implements Filter {
         HttpServletResponse  httpServletResponse = (HttpServletResponse) servletResponse;
         String authorization = request.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.setContentType("application/json");
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String token = authorization.substring(7);
         JwtHandler jwtHandler = ComponentFactory.getComponent(JwtHandler.class);
         if (!jwtHandler.validateToken(token)) {
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.setContentType("application/json");
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
