@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserDAO {
 
-    User saveNewUser(User user) throws UserNotFoundException;
+    User save(User user) throws UserNotFoundException;
 
     User getUserByLogin(String login) throws UserNotFoundException ;
     User getUserById(int id) throws UserNotFoundException ;

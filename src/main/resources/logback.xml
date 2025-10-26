@@ -1,6 +1,6 @@
 <configuration>
 
-    <conversionRule conversionWord="clr" converterClass="twitter.customLogbackSetting.CustomCompositeConverter" />
+    <conversionRule conversionWord="clr" converterClass="twitter.sideComponents.customLogbackSetting.CustomCompositeConverter" />
 
     <!-- Этот аппендер выводит логи в консоль -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

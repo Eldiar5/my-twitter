@@ -54,6 +54,86 @@
             <version>1.5.6</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Jetty dependencies -->
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>12.1.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty.ee10/jetty-ee10-servlet -->
+        <dependency>
+            <groupId>org.eclipse.jetty.ee10</groupId>
+            <artifactId>jetty-ee10-servlet</artifactId>
+            <version>12.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.17.0</version>
+        </dependency>
+
+        <!-- Jersey: "движок" для создания REST-эндпоинтов -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <!-- Jersey HK2: для внедрения зависимостей внутри Jersey -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <!-- Jersey + Jackson: для автоматической работы с JSON -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <!-- JWT dependencies -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+        </dependency>
+
+        <!-- Bcrypt endcoder -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>6.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -71,6 +151,9 @@
                 <database.url>jdbc:postgresql://localhost:5432/my_twitter_db</database.url>
                 <database.user>postgres</database.user>
                 <database.password>1</database.password>
+
+                <jwt.secret.key>RWxkaWFyV2lsbEJlY29tZVRoZUJlc3RKYXZhRGV2ZWxvcGVy</jwt.secret.key>
+                <token.life.time>300000</token.life.time>
             </properties>
         </profile>
 
@@ -85,6 +168,9 @@
                 <database.url>jdbc:postgresql://localhost:5432/my_twitter_prod_db</database.url>
                 <database.user>postgres</database.user>
                 <database.password>1</database.password>
+
+                <jwt.secret.key>RWxkaWFyV2lsbEJlY29tZVRoZUJlc3RKYXZhRGV2ZWxvcGVy</jwt.secret.key>
+                <token.life.time>300000</token.life.time>
             </properties>
         </profile>
 
@@ -99,6 +185,9 @@
                 <database.url>none</database.url>
                 <database.user>none</database.user>
                 <database.password>none</database.password>
+
+                <jwt.secret.key>none</jwt.secret.key>
+                <token.life.time>none</token.life.time>
             </properties>
         </profile>
     </profiles>

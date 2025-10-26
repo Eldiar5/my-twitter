@@ -66,3 +66,4 @@ target
 dependency-reduced-pom.xml
 postsData.txt
 usersData.txt
+src/main/resources/test.md

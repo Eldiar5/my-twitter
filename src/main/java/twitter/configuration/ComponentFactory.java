@@ -12,31 +12,31 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ComponentFactory {
-    private final Map<Class<?>, Object> components;
-    private final String packageName;
-    private final Environment environment;
-    private final Class<?> mainClass;
+    private static Map<Class<?>, Object> components;
+    private static String packageName;
+    private static Environment environment;
+    private static Class<?> mainClass;
 
-    public ComponentFactory(Class<?> mClass, Environment environment) {
-        this.mainClass = mClass;
-        this.packageName = mClass.getPackage().getName();
-        this.environment = environment;
-        this.components = new HashMap<>();
+    public static void use(Class<?> mClass, Environment env) {
+        mainClass = mClass;
+        packageName = mClass.getPackage().getName();
+        environment = env;
+        components = new HashMap<>();
     }
 
-    public <T> T getComponent(Class<T> clazz) {
-        return (T) this.components.get(clazz);
+    public static  <T> T getComponent(Class<T> clazz) {
+        return (T) components.get(clazz);
     }
 
-    public void configure() {
+    public static void configure() {
         try {
-            List<Class<?>> classes = this.scanPackage(mainClass);
+            List<Class<?>> classes = scanPackage(mainClass);
 
             List<ComponentDefinition<?>> componentDefinitionList = new LinkedList<>();
 
             for (Class<?> clazz : classes) {
                 if (clazz.isAnnotationPresent(Component.class)) {
-                    Constructor<?> constructorForInject = this.findInjectionConstructor(clazz);
+                    Constructor<?> constructorForInject = findInjectionConstructor(clazz);
 
                     if (Objects.isNull(constructorForInject)) {
                         System.out.println("Не найден конструктор, или он не помечен аннотацией Injection " + clazz.getSimpleName());
@@ -77,7 +77,7 @@ public class ComponentFactory {
                     }
 
 //                 1. СНАЧАЛА РЕГИСТРИРУЕМ САМ SideComponent КАК ОБЫЧНЫЙ КОМПОНЕНТ
-                    Constructor<?> constructorForInject = this.findInjectionConstructor(clazz);
+                    Constructor<?> constructorForInject = findInjectionConstructor(clazz);
 
                     // Добавляем "чертёж" для самого класса-фабрики (Source.class)
                     componentDefinitionList.add(new ComponentDefinition<>(clazz, clazz, constructorForInject, List.of(constructorForInject.getParameterTypes()), ElementType.TYPE));
@@ -97,7 +97,7 @@ public class ComponentFactory {
             for (ComponentDefinition<?> componentDefinition : componentDefinitionList) {
                 // Собираем компонент, только если он еще не был собран как зависимость
                 if (!components.containsKey(componentDefinition.getKeyClass())) {
-                    this.buildComponent(componentDefinition, componentDefinitionList, configurableClasses);
+                    buildComponent(componentDefinition, componentDefinitionList, configurableClasses);
                 }
             }
         } catch (Exception e) {
@@ -109,7 +109,7 @@ public class ComponentFactory {
 
 
     //Находим правильный конструктор для инъекции зависимостей, следуя правилам.
-    private Constructor<?> findInjectionConstructor(Class<?> clazz) {
+    private static Constructor<?> findInjectionConstructor(Class<?> clazz) {
         // 1. Ищем конструктор с аннотацией @Injection. Это высший приоритет.
         Optional<Constructor<?>> annotatedConstructor = Arrays.stream(clazz.getDeclaredConstructors())
                 .filter(c -> c.isAnnotationPresent(Injection.class))
@@ -135,7 +135,7 @@ public class ComponentFactory {
         throw new IllegalStateException("Не найден подходящий конструктор, для класса " + clazz.getSimpleName());
     }
 
-    private List<Class<?>> scanPackage(Class<?> mainClass) throws Exception {
+    private static List<Class<?>> scanPackage(Class<?> mainClass) throws Exception {
         //Передаем имя нашего package с проектом, и меняем формат пути для файловой системы,
         // на понятный для ClassLoader который ищет ресурсы.
         String packageName = mainClass.getPackageName().replace(".", "/");
@@ -180,13 +180,13 @@ public class ComponentFactory {
             //Получаем родительскую папку относительно переданного package с проектом,
             //чтобы построить полный путь до класса.
             File classpathRoot = packageDir.getParentFile();
-            this.findClasses(classpathRoot, classpathRoot, classes);
+            findClasses(classpathRoot, classpathRoot, classes);
         }
 
         return classes;
     }
 
-    private void findClasses(File classPathRoot, File currentDir, List<Class<?>> classes) throws ClassNotFoundException {
+    private static void findClasses(File classPathRoot, File currentDir, List<Class<?>> classes) throws ClassNotFoundException {
         // Получаем массив всех файлов и подпапок в текущей директории.
         File[] files = currentDir.listFiles();
 
@@ -219,7 +219,7 @@ public class ComponentFactory {
                 // Превращаем относительный путь в полное имя класса, понятное для Java.
                 // 1. Убираем расширение ".class".
                 // 2. Заменяем системные разделители пути ('\' или '/') на точки '.'.
-                // В итоге получаем строку "twitter.controller.UserCommandController".
+                // В итоге получаем строку "twitter.controller.v1.UserCommandController".
                 String className = relativePath.replace(".class", "").replace(File.separator, ".");
 
                 // Используем стандартный механизм Java, чтобы по имени класса загрузить его в память
@@ -229,7 +229,7 @@ public class ComponentFactory {
         }
     }
 
-    private void buildComponent(ComponentDefinition<?> componentDefinition, List<ComponentDefinition<?>> componentDefinitions, List<Class<?>> configurableClasses) throws Exception {
+    private static void buildComponent(ComponentDefinition<?> componentDefinition, List<ComponentDefinition<?>> componentDefinitions, List<Class<?>> configurableClasses) throws Exception {
         // ИСПРАВЛЕНИЕ: Добавляем проверку в самом начале
         if (components.containsKey(componentDefinition.getKeyClass())) {
             return; // Этот компонент уже собран, выходим
@@ -243,14 +243,14 @@ public class ComponentFactory {
             // Если фабрики ещё нет в контейнере...
             if (!components.containsKey(factoryClass)) {
                 // ...находим её "чертёж" и рекурсивно собираем её ПЕРЕД тем, как продолжить.
-                ComponentDefinition<?> factoryDefinition = this.getDefinition(factoryClass, componentDefinitions);
-                this.buildComponent(factoryDefinition, componentDefinitions, configurableClasses);
+                ComponentDefinition<?> factoryDefinition = getDefinition(factoryClass, componentDefinitions);
+                buildComponent(factoryDefinition, componentDefinitions, configurableClasses);
             }
         }
 
         //Если пришедший definition не требует аргументов для создания, создаем instance и ложим в контейнер.
         if (componentDefinition.getConstructorArgumentTypes().isEmpty()) {
-            this.components.put(componentDefinition.getKeyClass(), this.createInstance(componentDefinition));
+            components.put(componentDefinition.getKeyClass(), createInstance(componentDefinition));
             return;
         }
 
@@ -270,23 +270,23 @@ public class ComponentFactory {
 
             //Иначе мы отправляем аргумент в метод getDefinition и рекурсивно собираем сначала аргумент.
             if (!configurableClasses.contains(clazz)) {
-                ComponentDefinition<?> dependency = this.getDefinition(clazz, componentDefinitions);
-                this.buildComponent(dependency, componentDefinitions, configurableClasses);
+                ComponentDefinition<?> dependency = getDefinition(clazz, componentDefinitions);
+                buildComponent(dependency, componentDefinitions, configurableClasses);
 
             }
             //Ложим в список аргументов, рекурсивно созданные аргументы.
-            arguments.add(this.components.get(clazz));
+            arguments.add(components.get(clazz));
 
         }
         //Достаем тип данных у нашего definition, отправляем сам definition и собранные экземпляры аргументов в метод createInstance,
         //Получаем instance нашего definition и ложим в контейнер.
-        this.components.put(componentDefinition.getKeyClass(), this.createInstance(componentDefinition, arguments.toArray()));
+        components.put(componentDefinition.getKeyClass(), createInstance(componentDefinition, arguments.toArray()));
         //удаляем definition из списка конфигурируемых.
         configurableClasses.remove(componentDefinition.getKeyClass());
     }
 
     //getDefinition метод нужен для того чтобы получить описание пришедшого аргумента.
-    private ComponentDefinition<?> getDefinition(Class<?> args, List<ComponentDefinition<?>> componentDefinitionList) {
+    private static ComponentDefinition<?> getDefinition(Class<?> args, List<ComponentDefinition<?>> componentDefinitionList) {
         //Перебираем definitionList и если находим нашу зависимость возвращаем ее definition.
         Optional<ComponentDefinition<?>> definition = componentDefinitionList.stream()
                 .filter(defs -> defs.getKeyClass().equals(args))
@@ -303,7 +303,7 @@ public class ComponentFactory {
                 });
     }
 
-    private <T> T convertValue(Object value, Class<T> valueType) {
+    private static  <T> T convertValue(Object value, Class<T> valueType) {
         if (valueType.isInstance(value)) {
             return (T) value;
         }
@@ -321,19 +321,19 @@ public class ComponentFactory {
         };
     }
 
-    private void setFieldProperties(ComponentDefinition<?> componentDefinition, Object instance) {
+    private static void setFieldProperties(ComponentDefinition<?> componentDefinition, Object instance) {
         try {
             for (Field field : componentDefinition.getOriginalClass().getDeclaredFields()) {
                 if (field.isAnnotationPresent(Value.class)) {
                     Value annotation = field.getAnnotation(Value.class);
-                    Object value = this.environment.getProperty(annotation.key());
+                    Object value = environment.getProperty(annotation.key());
                     if (Objects.isNull(value)) {
                         System.out.println("Ошибка при конфигурации приложения: ");
                         System.out.println("Не найдено свойство " + annotation.key());
                         System.exit(1);
                     }
                     field.setAccessible(true);
-                    field.set(instance, this.convertValue(value, field.getType()));
+                    field.set(instance, convertValue(value, field.getType()));
                     field.setAccessible(false);
                 }
             }
@@ -343,17 +343,17 @@ public class ComponentFactory {
     }
 
     //createInstance метод нужен для создания экземпляра конкретного definition
-    private Object createInstance(ComponentDefinition<?> componentDefinition, Object... args) throws Exception {
+    private static Object createInstance(ComponentDefinition<?> componentDefinition, Object... args) throws Exception {
 
         if (componentDefinition.getElementType().equals(ElementType.METHOD)) {
 
             Class<?> sideComponentClass = componentDefinition.getOriginalClass();
-            Object sideComponentInstance = this.components.get(sideComponentClass);
+            Object sideComponentInstance = components.get(sideComponentClass);
             if (sideComponentInstance == null) {
                 throw new IllegalStateException("Экземпляр для SideComponent " + sideComponentClass.getName() + " не был создан заранее.");
             }
 
-            this.setFieldProperties(componentDefinition, sideComponentInstance);
+            setFieldProperties(componentDefinition, sideComponentInstance);
 
             Method method = (Method) componentDefinition.getHowToCreate();
             return method.invoke(sideComponentInstance, args);
@@ -362,7 +362,7 @@ public class ComponentFactory {
         if (componentDefinition.getElementType().equals(ElementType.TYPE)) {
             Constructor<?> constructor = (Constructor<?>) componentDefinition.getHowToCreate();
             Object instance = constructor.newInstance(args);
-            this.setFieldProperties(componentDefinition, instance);
+            setFieldProperties(componentDefinition, instance);
             return instance;
         }
 
