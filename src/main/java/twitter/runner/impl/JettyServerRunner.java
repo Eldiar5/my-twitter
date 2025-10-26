@@ -37,7 +37,7 @@ public class JettyServerRunner implements ApplicationRunner {
 
             context.addFilter(TwitterEndpointFilter.class, "/*", null);
 
-            context.addServlet(RegistrationCommandServlet.class, "/api/register");
+            context.addServlet(RegisterCommandServlet.class, "/api/register");
             context.addServlet(LoginCommandServlet.class, "/api/login");
             context.addServlet(InfoCommandServlet.class, "/api/info");
             context.addServlet(InfoAllCommandServlet.class, "/api/info-all");

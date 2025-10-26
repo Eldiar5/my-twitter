@@ -14,7 +14,7 @@ import twitter.sideComponents.web.ObjectMapperAsComponent;
 
 import java.io.IOException;
 
-public class RegistrationCommandServlet extends HttpServlet {
+public class RegisterCommandServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -24,7 +24,7 @@ public class RegistrationCommandServlet extends HttpServlet {
         try {
             RegistrationController regController = ComponentFactory.getComponent(RegistrationController.class);
             RegistrationResponseDto regResponseDto = regController.register(requestDto);
-            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
 
             resp.getWriter().write(mapper.writeValueAsString(regResponseDto));
