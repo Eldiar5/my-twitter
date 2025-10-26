@@ -31,7 +31,7 @@ public class AddPostCommandServlet extends HttpServlet {
             String user = jwtHandler.getUsernameFromToken(token);
             PostController  postController = ComponentFactory.getComponent(PostController.class);
             PostResponseDto responseDto = postController.addPost(postRequestDto, user);
-            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
 
             resp.getWriter().write(mapper.writeValueAsString(responseDto));
