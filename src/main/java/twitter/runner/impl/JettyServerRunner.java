@@ -10,6 +10,7 @@ import twitter.configuration.Profile;
 import twitter.configuration.Value;
 import twitter.filter.TwitterEndpointFilter;
 import twitter.runner.ApplicationRunner;
+import twitter.servlet.HelpCommandServlet;
 import twitter.servlet.postServlets.*;
 import twitter.servlet.userServlets.*;
 
@@ -51,6 +52,8 @@ public class JettyServerRunner implements ApplicationRunner {
             context.addServlet(PostsByTagCommandServlet.class, "/api/posts-by-tag");
             context.addServlet(PostsByUserTypeCommandServlet.class, "/api/posts-by-user-type");
             context.addServlet(DeletePostCommandServlet.class, "/api/delete-post");
+
+            context.addServlet(HelpCommandServlet.class, "/api/help");
 
             server.start();
             server.join();
