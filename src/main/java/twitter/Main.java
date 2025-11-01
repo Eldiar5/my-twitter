@@ -6,23 +6,21 @@ import twitter.configuration.Environment;
 import twitter.configuration.EnvironmentBuilder;
 import twitter.runner.ApplicationRunner;
 
-import java.util.Arrays;
-
 public class Main {
     public static void main(String[] args) {
         Environment environment = EnvironmentBuilder
                 .buildEnvironment()
                 .build();
 
-        ComponentFactory factory = new ComponentFactory(Main.class, environment);
-        factory.configure();
+        ComponentFactory.use(Main.class, environment);
+        ComponentFactory.configure();
 
         String activeProfile = environment.getApplicationProfile();
 
         if (!"test".equals(activeProfile)) {
 
             System.out.println("Запуск миграции базы данных для профиля: " + activeProfile);
-            Flyway flyway = factory.getComponent(Flyway.class);
+            Flyway flyway = ComponentFactory.getComponent(Flyway.class);
 
             if (flyway != null) {
                 flyway.migrate();
@@ -32,7 +30,7 @@ public class Main {
 
         }else {System.out.println("Профиль 'test' активен, пропуск миграции базы данных.");}
 
-        ApplicationRunner runner = factory.getComponent(ApplicationRunner.class);
+        ApplicationRunner runner = ComponentFactory.getComponent(ApplicationRunner.class);
         runner.run();
     }
 }

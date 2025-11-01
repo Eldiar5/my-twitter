@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
 
-    User saveNewUser(User user) throws UserNotFoundException;
+    User saveNewUser(User user, String rawPassword) throws UserNotFoundException;
 
     boolean isUserExists(String login) throws UserNotFoundException;
 

@@ -1,23 +1,25 @@
 package twitter.entity.post;
 
+import twitter.entity.user.User;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Post {
 
-    private Integer authorId;
+    private User author;
     private Integer postId;
     private String topic;
     private String text;
     private String[] tags;
     private LocalDateTime createdAt;
 
-    public int getAuthorId() {
-        return authorId;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Integer authorId) {
-        this.authorId = authorId;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public Integer getPostId() {
@@ -78,6 +80,6 @@ public class Post {
         DateTimeFormatter fCreatedAt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createdAtString = this.createdAt.format(fCreatedAt);
         return String.format("[POST]{%d}{%d}{%s}{%s}{%s}{%s}",
-                this.authorId, this.postId, this.topic, this.text, String.join(",", this.tags), createdAtString);
+                this.author.getId(), this.postId, this.topic, this.text, String.join(",", this.tags), createdAtString);
     }
 }

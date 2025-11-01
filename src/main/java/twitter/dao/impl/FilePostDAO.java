@@ -6,7 +6,7 @@ import twitter.configuration.Profile;
 import twitter.dao.PostDAO;
 import twitter.entity.post.Post;
 import twitter.exceptions.PostNotFoundException;
-import twitter.mapper.fileMapper.FilePostMapper;
+import twitter.mapper.v1.fileMapper.FilePostMapper;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -93,7 +93,7 @@ public class FilePostDAO implements PostDAO{
 
         return this.posts
                 .stream()
-                .filter(post -> userId.equals((long) post.getAuthorId()))
+                .filter(post -> userId.equals(post.getAuthor().getId()))
                 .toList();
     }
 
@@ -117,7 +117,7 @@ public class FilePostDAO implements PostDAO{
 
         return this.posts
                 .stream()
-                .filter(post -> isUserIdInArray(post.getAuthorId(), userIds))
+                .filter(post -> isUserIdInArray(post.getAuthor().getId().intValue(), userIds))
                 .toList();
     }
 
